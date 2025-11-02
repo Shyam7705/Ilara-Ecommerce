@@ -49,7 +49,7 @@ Ilara is a fully-featured, modern e-commerce shopping platform built with React 
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd orebishopping-master
+   cd ilarashopping-master
    ```
 
 2. **Install dependencies**
@@ -76,7 +76,7 @@ This creates an optimized production build in the `build` folder.
 ## 📁 Project Structure
 
 ```
-orebishopping-master/
+ilarashopping-master/
 ├── public/
 │   ├── index.html
 │   ├── manifest.json

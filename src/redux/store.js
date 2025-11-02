@@ -10,7 +10,7 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import ilaraReducer from "./orebiSlice";
+import ilaraReducer from "./ilaraSlice";
 
 const persistConfig = {
   key: "root",

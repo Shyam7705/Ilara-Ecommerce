@@ -24,10 +24,24 @@ import ProductDetails from "./pages/ProductDetails/ProductDetails";
 import Shop from "./pages/Shop/Shop";
 import { initDatabase } from "./utils/database";
 import Chatbot from "./components/Chatbot/Chatbot";
+import { initGA, pageview } from "./utils/analytics";
+import { useLocation } from "react-router-dom";
+
+// Component to track page views - must be inside RouterProvider
+const PageViewTracker = () => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    pageview(location.pathname + location.search);
+  }, [location]);
+  
+  return null;
+};
 
 const Layout = () => {
   return (
     <div>
+      <PageViewTracker />
       <Header />
       <HeaderBottom />
       <SpecialCase />
@@ -64,6 +78,9 @@ function App() {
   useEffect(() => {
     // Initialize database with dummy user on app start
     initDatabase();
+    
+    // Initialize Google Analytics
+    initGA();
   }, []);
 
   return (

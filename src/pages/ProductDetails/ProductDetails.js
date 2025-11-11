@@ -4,6 +4,7 @@ import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import ProductInfo from "../../components/pageProps/productDetails/ProductInfo";
 import ProductsOnSale from "../../components/pageProps/productDetails/ProductsOnSale";
 import { paginationItems, SplOfferData } from "../../constants";
+import { trackProductView } from "../../utils/analytics";
 
 const ProductDetails = () => {
   const location = useLocation();
@@ -17,6 +18,8 @@ const ProductDetails = () => {
     // Check if product data is in location.state
     if (location.state?.item) {
       setProductInfo(location.state.item);
+      // Track product view
+      trackProductView(location.state.item);
       return;
     }
 
@@ -35,6 +38,8 @@ const ProductDetails = () => {
 
       if (foundProduct) {
         setProductInfo(foundProduct);
+        // Track product view
+        trackProductView(foundProduct);
       } else {
         // If product not found and we're not already on shop page, redirect to shop page
         if (location.pathname !== "/shop") {

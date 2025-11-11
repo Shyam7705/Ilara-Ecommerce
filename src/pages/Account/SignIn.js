@@ -3,6 +3,7 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { logoLight } from "../../assets/images";
 import { authenticateUser, saveUserSession } from "../../utils/database";
+import { trackUserLogin } from "../../utils/analytics";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -55,6 +56,10 @@ const SignIn = () => {
     if (result.success) {
       // Save user session
       saveUserSession(result.user);
+      
+      // Track user login
+      trackUserLogin("email");
+      
       setSuccessMsg(`Welcome back, ${result.user.name}! You have successfully signed in.`);
       setEmail("");
       setPassword("");

@@ -4,11 +4,16 @@ import { addToCart } from "../../../redux/ilaraSlice";
 
 const ProductInfo = ({ productInfo }) => {
   const dispatch = useDispatch();
+  
+  if (!productInfo) {
+    return <div className="text-center py-10">Product information not available.</div>;
+  }
+  
   return (
     <div className="flex flex-col gap-5">
-      <h2 className="text-4xl font-semibold">{productInfo.productName}</h2>
-      <p className="text-xl font-semibold">₹{productInfo.price}</p>
-      <p className="text-base text-gray-600">{productInfo.des}</p>
+      <h2 className="text-4xl font-semibold">{productInfo.productName || "Product"}</h2>
+      <p className="text-xl font-semibold">₹{productInfo.price || "0.00"}</p>
+      <p className="text-base text-gray-600">{productInfo.des || "No description available."}</p>
       <p className="text-sm">Be the first to leave a review.</p>
       <p className="font-medium text-lg">
         <span className="font-normal">Color:</span> {productInfo.color || "Mixed"}

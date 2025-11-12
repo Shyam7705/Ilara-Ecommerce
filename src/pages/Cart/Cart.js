@@ -6,6 +6,7 @@ import Breadcrumbs from "../../components/pageProps/Breadcrumbs";
 import { resetCart } from "../../redux/ilaraSlice";
 import { emptyCart } from "../../assets/images/index";
 import ItemCard from "./ItemCard";
+import { trackBeginCheckout } from "../../utils/analytics";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -93,7 +94,14 @@ const Cart = () => {
               </div>
               <div className="flex justify-end">
                 <Link to="/paymentgateway">
-                  <button className="w-52 h-10 bg-primeColor text-white hover:bg-black duration-300">
+                  <button
+                    onClick={() => {
+                      // Track begin checkout
+                      const totalValue = totalAmt + shippingCharge;
+                      trackBeginCheckout(products, totalValue);
+                    }}
+                    className="w-52 h-10 bg-primeColor text-white hover:bg-black duration-300"
+                  >
                     Proceed to Checkout
                   </button>
                 </Link>

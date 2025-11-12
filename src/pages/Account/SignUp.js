@@ -3,6 +3,7 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
 import { logoLight } from "../../assets/images";
 import { registerUser, saveUserSession } from "../../utils/database";
+import { trackUserRegistration } from "../../utils/analytics";
 
 const SignUp = () => {
   // ============= Initial State Start here =============
@@ -139,6 +140,9 @@ const SignUp = () => {
           if (result.user) {
             saveUserSession(result.user);
           }
+          
+          // Track user registration
+          trackUserRegistration("email");
           
           setSuccessMsg(
             `Hello dear ${clientName}, Welcome to ILARA! Your account has been created successfully.`

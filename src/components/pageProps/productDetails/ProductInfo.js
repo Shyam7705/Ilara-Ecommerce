@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/ilaraSlice";
+import { trackAddToCart } from "../../../utils/analytics";
 
 const ProductInfo = ({ productInfo }) => {
   const dispatch = useDispatch();
@@ -29,19 +30,24 @@ const ProductInfo = ({ productInfo }) => {
         </p>
       )}
       <button
-        onClick={() =>
-          dispatch(
-            addToCart({
-              _id: productInfo.id,
-              name: productInfo.productName,
-              quantity: 1,
-              image: productInfo.img,
-              badge: productInfo.badge,
-              price: productInfo.price,
-              colors: productInfo.color,
-            })
-          )
-        }
+        onClick={() => {
+          const cartItem = {
+            _id: productInfo.id || productInfo._id,
+            name: productInfo.productName,
+            quantity: 1,
+            image: productInfo.img,
+            badge: productInfo.badge,
+            price: productInfo.price,
+            colors: productInfo.color,
+            category: productInfo.category,
+            brand: productInfo.brand,
+          };
+          
+          dispatch(addToCart(cartItem));
+          
+          // Track add to cart event
+          trackAddToCart(cartItem);
+        }}
         className="w-full py-4 bg-primeColor hover:bg-black duration-300 text-white text-lg font-titleFont"
       >
         Add to Cart

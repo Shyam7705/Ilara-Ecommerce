@@ -19,7 +19,6 @@ const Chatbot = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const GEMINI_API_KEY = "AIzaSyAAJDVUNhl1MtoMNYXJr7TxL46b2QRS20k";
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -114,6 +113,27 @@ Your Personality:
 - Answer questions about Ilara shopping
 - Keep responses concise but informative
 - Redirect unrelated questions back to Ilara shopping topics`;
+  };
+
+  const sendToGemini = async (userMessage, history) => {
+    const prompt = `${getWebsiteContext()}\n\nPrevious conversation:\n${history
+      .slice(-3)
+      .map((m) => `${m.role}: ${m.content}`)
+      .join("\n")}\n\nUser: ${userMessage}\n\nAssistant:`;
+
+    const res = await fetch("/api/gemini-chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: prompt, history }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error from backend");
+    }
+
+    return data.reply || "";
   };
 
   // Find product in message
@@ -217,42 +237,9 @@ Your Personality:
     }
 
     try {
-      // Call Gemini API only for website-related questions
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  {
-                    text: `${getWebsiteContext()}\n\nPrevious conversation:\n${messages.slice(-3).map(m => `${m.role}: ${m.content}`).join('\n')}\n\nUser: ${userMessage}\n\nAssistant:`,
-                  },
-                ],
-              },
-            ],
-            generationConfig: {
-              temperature: 0.7,
-              topK: 40,
-              topP: 0.95,
-              maxOutputTokens: 1024,
-            },
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || "Failed to get response");
-      }
-
+      const assistantReply = await sendToGemini(userMessage, messages);
       let assistantMessage =
-        data.candidates?.[0]?.content?.parts?.[0]?.text ||
+        assistantReply ||
         "I apologize, but I couldn't process your request. Please try again.";
 
       // Check for navigation commands in the response

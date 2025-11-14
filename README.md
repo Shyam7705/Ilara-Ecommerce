@@ -185,9 +185,10 @@ Product data is stored in `src/constants/index.js`:
 - Update these arrays to modify product listings
 
 ### Chatbot Configuration
-Chatbot API key is configured in `src/components/Chatbot/Chatbot.js`:
-- Update `GEMINI_API_KEY` with your Google Gemini API key
-- Modify `getWebsiteContext()` to update chatbot knowledge
+The chatbot now calls a secure backend endpoint and does not store any API keys in the frontend:
+- Backend endpoint: `/api/gemini-chat`
+- All Gemini requests are routed through the backend for security
+- Update `getWebsiteContext()` in `src/components/Chatbot/Chatbot.js` to adjust chatbot knowledge
 
 ## 📝 Scripts
 
@@ -200,10 +201,70 @@ npm run eject      # Eject from Create React App (irreversible)
 
 ## 🔐 Security Notes
 
-- API keys are stored in client-side code (for development)
-- For production, consider using environment variables
-- User passwords are hashed using crypto-js
-- Session data is stored in localStorage
+- API keys must not be placed in frontend files
+- Gemini calls now go through the backend serverless function
+- If your Gemini key was previously exposed, rotate it immediately in the Google Cloud Console
+- Session data remains in localStorage for demo purposes; do not store sensitive personal data
+
+## 🔒 Secure Gemini AI Integration
+
+This project now uses a secure backend serverless function for Gemini AI integration.
+
+- Endpoint: `/api/gemini-chat`
+- Implementation: `api/gemini-chat.js` using `@google/genai`
+- No API keys are present in frontend code
+- The Chatbot component sends user messages to the backend, which calls Gemini and returns a text reply
+
+## ⚙️ Environment Configuration
+
+Create a `.env.local` file in the project root during local development:
+
+```
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+- `.env`, `.env.local`, and all env files are ignored by Git (see `.gitignore`)
+- Do not commit any environment files to the repository
+
+## ☁️ Vercel Deployment Notes
+
+- Designed for deployment on Vercel
+- The `api/` folder contains Vercel Serverless Functions
+- Set environment variable in Vercel:
+  - Navigate to: `Vercel → Project → Settings → Environment Variables`
+  - Add: `GEMINI_API_KEY`
+- Vercel builds the React project automatically on each GitHub push
+- The `build/` folder is ignored by Git and generated on deploy
+
+## 📁 Project Structure Update
+
+```
+api/
+  gemini-chat.js
+src/
+public/
+.gitignore
+.env.local (not committed)
+```
+
+- All AI-related secret logic is contained in `api/gemini-chat.js`
+
+## ▶️ Usage Instructions
+
+Run locally:
+
+```
+npm install
+npm start
+```
+
+Build for production:
+
+```
+npm run build
+```
+
+Note: `build/` is ignored by Git and created dynamically.
 
 ## 🤝 Contributing
 
